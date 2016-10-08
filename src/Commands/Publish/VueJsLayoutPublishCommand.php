@@ -66,46 +66,46 @@ class VueJsLayoutPublishCommand extends PublishBaseCommand
         $baseRequestCustomFiles = $this->getRequestBaseCustomFile();
 
         foreach ($files as $stub => $blade) {
-            $sourceFile = base_path('vendor/infyomlabs/'.$templateType.'/templates/'.$stub);
+            $sourceFile = base_path('vendor/catalinbozianu/'.$templateType.'/templates/'.$stub);
             $destinationFile = $viewsPath.$blade;
             $this->publishFile($sourceFile, $destinationFile, $blade);
         }
 
         foreach ($vueLayoutFiles as $stub => $blade) {
-            $sourceFile = base_path('vendor/infyomlabs/'.$templateType.'/templates/vuejs/'.$stub);
+            $sourceFile = base_path('vendor/catalinbozianu/'.$templateType.'/templates/vuejs/'.$stub);
             $destinationFile = $viewsPath.$blade;
             $this->publishFile($sourceFile, $destinationFile, $blade);
         }
 
         foreach ($baseRequestCustomFiles as $stub => $php) {
-            $sourceFile = base_path('vendor/infyomlabs/laravel-generator/templates/'.$stub);
+            $sourceFile = base_path('vendor/catalinbozianu/laravel-generator/templates/'.$stub);
             $destinationFile = $requestPath.$php;
             $this->publishFile($sourceFile, $destinationFile, $php);
         }
 
         foreach ($filesJs as $stub => $blade) {
-            $sourceFile = base_path('vendor/infyomlabs/laravel-generator/templates/'.$stub);
+            $sourceFile = base_path('vendor/catalinbozianu/laravel-generator/templates/'.$stub);
             $destinationFile = $assetsJsPath.$blade;
             $this->publishFile($sourceFile, $destinationFile, $blade);
         }
 
         foreach ($filesCss as $stub => $blade) {
-            $sourceFile = base_path('vendor/infyomlabs/laravel-generator/templates/'.$stub);
+            $sourceFile = base_path('vendor/catalinbozianu/laravel-generator/templates/'.$stub);
             $destinationFile = $assetsCssPath.$blade;
             $this->publishFile($sourceFile, $destinationFile, $blade);
         }
 
         foreach ($filesVendor as $stub => $blade) {
-            $sourceFile = base_path('vendor/infyomlabs/laravel-generator/templates/'.$stub);
+            $sourceFile = base_path('vendor/catalinbozianu/laravel-generator/templates/'.$stub);
             $destinationFile = $vendorPath.$blade;
             $this->publishFile($sourceFile, $destinationFile, $blade);
         }
 
-        $sourceFile = base_path('vendor/infyomlabs/laravel-generator/templates/vuejs/js/gulpfile.js');
+        $sourceFile = base_path('vendor/catalinbozianu/laravel-generator/templates/vuejs/js/gulpfile.js');
         $destinationFile = base_path().'/gulpfile.js';
         $this->publishFile($sourceFile, $destinationFile, 'gulpfile.js');
 
-        $sourceFile = base_path('vendor/infyomlabs/laravel-generator/templates/vuejs/js/package.json');
+        $sourceFile = base_path('vendor/catalinbozianu/laravel-generator/templates/vuejs/js/package.json');
         $destinationFile = base_path().'/package.json';
         $this->publishFile($sourceFile, $destinationFile, 'package.json');
     }
