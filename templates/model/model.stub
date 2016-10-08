@@ -1,12 +1,13 @@
 <?php
 
 namespace $NAMESPACE_MODEL$;
-
+use HipsterJazzbo\Landlord\BelongsToTenants;
 use $NAMESPACE_MODEL_EXTEND$ as Model;
 $SOFT_DELETE_IMPORT$
 $DOCS$
 class $MODEL_NAME$ extends Model
 {
+    use BelongsToTenants;
 $SOFT_DELETE$
     public $table = '$TABLE_NAME$';
     $TIMESTAMPS$
