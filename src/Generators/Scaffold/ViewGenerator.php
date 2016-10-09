@@ -303,7 +303,7 @@ class ViewGenerator extends BaseGenerator
 
             if (!empty($fieldTemplate)) {
                 if ($field->htmlType == "select") {
-                    if (!isset($field->selectModel)) {
+                    if (!isset($field->selectModel) && $field->selectModel != "") {
                         preg_match("/(.*)_id/", $field->name, $match);
                         $field->selectModel = studly_case(end($match));
                     }
