@@ -302,6 +302,14 @@ class ViewGenerator extends BaseGenerator
             $fieldTemplate = HTMLFieldGenerator::generateHTML($field, $this->templateType);
 
             if (!empty($fieldTemplate)) {
+                if ($field->htmlType == "select") {
+                    if (!isset($field->selectModel)) {
+                        preg_match("/(.*)_id/", $field->name, $match);
+                        $field->selectModel = studly_case(end($match));
+                    }
+                    $fieldTemplate = str_replace('$MODEL$', "\\App\\Models\\" . $field->selectModel, $fieldTemplate);
+                }
+
                 $fieldTemplate = fill_template_with_field_data(
                     $this->commandData->dynamicVars,
                     $this->commandData->fieldNamesMapping,
