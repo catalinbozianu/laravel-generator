@@ -20,6 +20,7 @@ class GeneratorField
     public $migrationText;
     public $foreignKeyText;
     public $validations;
+    public $selectModel;
 
     /** @var bool */
     public $isSearchable = true;
@@ -120,6 +121,7 @@ class GeneratorField
         $field->parseDBType($fieldInput['dbType']);
         $field->parseHtmlInput(isset($fieldInput['htmlType']) ? $fieldInput['htmlType'] : '');
         $field->validations = isset($fieldInput['validations']) ? $fieldInput['validations'] : '';
+        $field->selectModel = isset($fieldInput['selectModel']) ? $fieldInput['selectModel'] : '';
         $field->isSearchable = isset($fieldInput['searchable']) ? $fieldInput['searchable'] : false;
         $field->isFillable = isset($fieldInput['fillable']) ? $fieldInput['fillable'] : true;
         $field->isPrimary = isset($fieldInput['primary']) ? $fieldInput['primary'] : false;
