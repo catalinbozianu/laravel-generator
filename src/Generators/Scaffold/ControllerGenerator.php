@@ -76,6 +76,58 @@ class ControllerGenerator extends BaseGenerator
             );
         }
 
+        $foreignColumns = [];
+        foreach ($this->commandData->fields as $column) {
+            if (preg_match("/(.*)_id/", $column->name, $match) && $column->inIndex) {
+                $fieldJoinName = end($match);
+                $foreignColumns[$column->name] = $fieldJoinName;
+                foreach ($headerFields as &$hF) {
+                    $hF = str_replace(
+                        "'$column->name' => ['name' => '$column->name', 'data' => '$column->name']",
+                        "'$fieldJoinName' => ['name' => '{$fieldJoinName}_name', 'data' => '{$fieldJoinName}_name']",
+                        $hF
+                    );
+                }
+            }
+        }
+
+        $foreignKeys = \DB::table("INFORMATION_SCHEMA.KEY_COLUMN_USAGE")
+            ->where("TABLE_SCHEMA", env("DB_DATABASE"))
+            ->where("TABLE_NAME", $this->commandData->dynamicVars['$MODEL_NAME_PLURAL_SNAKE$'])
+            ->whereNotNull("REFERENCED_TABLE_NAME")
+            ->select(["COLUMN_NAME", "REFERENCED_TABLE_NAME", "REFERENCED_COLUMN_NAME"])->get();
+        $foreignKeys = json_decode(json_encode($foreignKeys), true);
+
+        $datatableJoinSelect = '->select("' . $this->commandData->dynamicVars['$MODEL_NAME_PLURAL_SNAKE$'] . '.*"';
+        $selectNames = [];
+        $datatableJoins = [];
+        foreach ($foreignKeys as $foreign) {
+            if (isset($foreignColumns[$foreign["COLUMN_NAME"]])) {
+                $selectNames[] = '"' . $foreign["REFERENCED_TABLE_NAME"] . ".name as " . $foreignColumns[$foreign["COLUMN_NAME"]] . '_name"';
+                $datatableJoins[] = '->leftJoin("' . $foreign["REFERENCED_TABLE_NAME"] . '", "' . $this->commandData->dynamicVars['$MODEL_NAME_PLURAL_SNAKE$'] . '.' . $foreign["COLUMN_NAME"] . '", "=", "' . $foreign["REFERENCED_TABLE_NAME"] . '.id")';
+            }
+        }
+        $datatableJoinSelect .= ((count($selectNames)) ? ', ' . implode(", ", $selectNames) : "") . ")";
+
+        $templateData = str_replace(
+            '$DATATABLE_JOIN_SELECT$',
+            "$" . $this->commandData->dynamicVars['$MODEL_NAME_PLURAL_CAMEL$'] . " = " .
+            "$" . $this->commandData->dynamicVars['$MODEL_NAME_PLURAL_CAMEL$'] . $datatableJoinSelect . ";",
+            $templateData
+        );
+
+        if (count($datatableJoins)) {
+            $datatableJoins = implode("\n\t\t\t", $datatableJoins);
+            $templateData = str_replace(
+                '$DATATABLE_JOINS$',
+                "$" . $this->commandData->dynamicVars['$MODEL_NAME_PLURAL_CAMEL$'] . " = " .
+                "$" . $this->commandData->dynamicVars['$MODEL_NAME_PLURAL_CAMEL$'] . $datatableJoins . ";",
+                $templateData
+            );
+        } else {
+            $templateData = str_replace('$DATATABLE_JOINS$', "", $templateData);
+        }
+
         $path = $this->commandData->config->pathDataTables;
 
         $fileName = $this->commandData->modelName.'DataTable.php';
